@@ -4,13 +4,21 @@ import Navbar from './component/Navbar';
 import BalanceSheet from './component/BalanceSheet';
 import Ledger from './component/Ledger';
 import ToDoList from './component/Todolist';
+import GlobalStyle from './style/GlobalStyle';
+import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 import styled from 'styled-components';
 
-const App = () => {
+const AppContent = () => {
+  const { isDarkMode, toggleTheme } = useTheme();
+
   return (
-    <Router>
+    <>
+      <GlobalStyle isDarkMode={isDarkMode} />
       <Navbar />
       <MainContainer>
+        <ThemeToggleButton onClick={toggleTheme}>
+          {isDarkMode ? 'Light Mode' : 'Dark Mode'}
+        </ThemeToggleButton>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/balance-sheet" element={<BalanceSheet />} />
@@ -18,14 +26,37 @@ const App = () => {
           <Route path="/todo" element={<ToDoList />} />
         </Routes>
       </MainContainer>
-    </Router>
+    </>
   );
 };
+
+const App = () => (
+  <ThemeProvider>
+    <Router>
+      <AppContent />
+    </Router>
+  </ThemeProvider>
+);
 
 const MainContainer = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: 1rem;
+`;
+
+const ThemeToggleButton = styled.button`
+  position: fixed;
+  top: 0.5rem;
+  right: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  
+  &:hover {
+    background-color: #0056b3;
+  }
 `;
 
 const Home = () => (

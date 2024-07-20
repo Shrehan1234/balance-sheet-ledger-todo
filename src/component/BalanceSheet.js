@@ -1,119 +1,162 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
+import {
+  Container,
+  Section,
+  Table,
+  Input,
+  Button,
+  Total,
+  DeleteButton
+} from '../style/BalanceSheetStyles';
 
 const BalanceSheet = () => {
-  const [entries, setEntries] = useState([]);
-  const [description, setDescription] = useState('');
-  const [amount, setAmount] = useState('');
-  const [error, setError] = useState('');
+  const [liabilities, setLiabilities] = useState([]);
+  const [assets, setAssets] = useState([]);
+  const [liabilityDescription, setLiabilityDescription] = useState('');
+  const [liabilityAmount, setLiabilityAmount] = useState('');
+  const [liabilityNegativeAmount, setLiabilityNegativeAmount] = useState('');
+  const [assetDescription, setAssetDescription] = useState('');
+  const [assetAmount, setAssetAmount] = useState('');
+  const [assetNegativeAmount, setAssetNegativeAmount] = useState('');
 
-  const addEntry = () => {
-    if (!description || !amount) {
-      setError('Description and amount are required.');
-      return;
-    }
-    setEntries([...entries, { description, amount: parseFloat(amount) }]);
-    setDescription('');
-    setAmount('');
-    setError('');
+  const addLiability = () => {
+    const entry = {
+      description: liabilityDescription,
+      amount: parseFloat(liabilityAmount),
+      negativeAmount: parseFloat(liabilityNegativeAmount) || 0,
+    };
+    setLiabilities([...liabilities, entry]);
+
+    // Clear liability inputs
+    setLiabilityDescription('');
+    setLiabilityAmount('');
+    setLiabilityNegativeAmount('');
   };
 
-  const calculateTotal = () => {
-    return entries.reduce((total, entry) => total + entry.amount, 0);
+  const addAsset = () => {
+    const entry = {
+      description: assetDescription,
+      amount: parseFloat(assetAmount),
+      negativeAmount: parseFloat(assetNegativeAmount) || 0,
+    };
+    setAssets([...assets, entry]);
+
+    // Clear asset inputs
+    setAssetDescription('');
+    setAssetAmount('');
+    setAssetNegativeAmount('');
   };
+
+  const deleteLiability = (index) => {
+    const newLiabilities = liabilities.filter((_, i) => i !== index);
+    setLiabilities(newLiabilities);
+  };
+
+  const deleteAsset = (index) => {
+    const newAssets = assets.filter((_, i) => i !== index);
+    setAssets(newAssets);
+  };
+
+  const calculateTotal = (entries) =>
+    entries.reduce((acc, entry) => acc + entry.amount - entry.negativeAmount, 0);
 
   return (
     <Container>
       <h1>Balance Sheet</h1>
-      {error && <Error>{error}</Error>}
-      <Form>
-        <input
+
+      <Section>
+        <h2>Liabilities</h2>
+        <Input
           type="text"
           placeholder="Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          value={liabilityDescription}
+          onChange={(e) => setLiabilityDescription(e.target.value)}
         />
-        <input
+        <Input
           type="number"
           placeholder="Amount"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
+          value={liabilityAmount}
+          onChange={(e) => setLiabilityAmount(e.target.value)}
         />
-        <button onClick={addEntry}>Add Entry</button>
-      </Form>
-      <Table>
-        <thead>
-          <tr>
-            <th>Description</th>
-            <th>Amount</th>
-          </tr>
-        </thead>
-        <tbody>
-          {entries.map((entry, index) => (
-            <tr key={index}>
-              <td>{entry.description}</td>
-              <td>{entry.amount.toFixed(2)}</td>
+        <Input
+          type="number"
+          placeholder="Negative Amount"
+          value={liabilityNegativeAmount}
+          onChange={(e) => setLiabilityNegativeAmount(e.target.value)}
+        />
+        <Button onClick={addLiability}>Add Liability</Button>
+        <Table>
+          <thead>
+            <tr>
+              <th>Description</th>
+              <th>Amount</th>
+              <th>Negative Amount</th>
+              <th>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </Table>
-      <Total>Total: {calculateTotal().toFixed(2)}</Total>
+          </thead>
+          <tbody>
+            {liabilities.map((entry, index) => (
+              <tr key={index}>
+                <td>{entry.description}</td>
+                <td>{entry.amount.toFixed(2)}</td>
+                <td>{entry.negativeAmount.toFixed(2)}</td>
+                <td>
+                  <DeleteButton onClick={() => deleteLiability(index)}>Delete</DeleteButton>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+        <Total>Total Liabilities: {calculateTotal(liabilities).toFixed(2)}</Total>
+      </Section>
+
+      <Section>
+        <h2>Assets</h2>
+        <Input
+          type="text"
+          placeholder="Description"
+          value={assetDescription}
+          onChange={(e) => setAssetDescription(e.target.value)}
+        />
+        <Input
+          type="number"
+          placeholder="Amount"
+          value={assetAmount}
+          onChange={(e) => setAssetAmount(e.target.value)}
+        />
+        <Input
+          type="number"
+          placeholder="Negative Amount"
+          value={assetNegativeAmount}
+          onChange={(e) => setAssetNegativeAmount(e.target.value)}
+        />
+        <Button onClick={addAsset}>Add Asset</Button>
+        <Table>
+          <thead>
+            <tr>
+              <th>Description</th>
+              <th>Amount</th>
+              <th>Negative Amount</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {assets.map((entry, index) => (
+              <tr key={index}>
+                <td>{entry.description}</td>
+                <td>{entry.amount.toFixed(2)}</td>
+                <td>{entry.negativeAmount.toFixed(2)}</td>
+                <td>
+                  <DeleteButton onClick={() => deleteAsset(index)}>Delete</DeleteButton>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+        <Total>Total Assets: {calculateTotal(assets).toFixed(2)}</Total>
+      </Section>
     </Container>
   );
 };
 
-const Container = styled.div`
-  padding: 2rem;
-`;
-
-const Form = styled.div`
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
-
-  input {
-    padding: 0.5rem;
-    font-size: 1rem;
-  }
-
-  button {
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
-  }
-
-  button:hover {
-    background-color: #0056b3;
-  }
-`;
-
-const Table = styled.table`
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 1rem;
-
-  th, td {
-    padding: 0.5rem;
-    border: 1px solid #ddd;
-  }
-
-  th {
-    background-color: #f4f4f4;
-  }
-`;
-
-const Total = styled.div`
-  font-weight: bold;
-  font-size: 1.2rem;
-`;
-
-const Error = styled.div`
-  color: red;
-  margin-bottom: 1rem;
-`;
-
 export default BalanceSheet;
-

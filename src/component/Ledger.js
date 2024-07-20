@@ -1,107 +1,120 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
+import { Container, Table, Input, Button, Section, Total, DeleteButton } from '../style/LedgerStyles';
 
 const Ledger = () => {
-  const [entries, setEntries] = useState([]);
-  const [description, setDescription] = useState('');
+  const [entries, setEntries] = useState({
+    debit: [],
+    credit: []
+  });
+  const [date, setDate] = useState('');
+  const [particulars, setParticulars] = useState('');
+  const [ledgerFolio, setLedgerFolio] = useState('');
   const [amount, setAmount] = useState('');
+  const [isDebit, setIsDebit] = useState(true); // true for debit, false for credit
 
   const addEntry = () => {
-    setEntries([...entries, { description, amount: parseFloat(amount) }]);
-    setDescription('');
+    const entry = {
+      date,
+      particulars,
+      ledgerFolio,
+      amount: parseFloat(amount) || 0,
+    };
+
+    if (isDebit) {
+      setEntries((prev) => ({
+        ...prev,
+        debit: [...prev.debit, entry]
+      }));
+    } else {
+      setEntries((prev) => ({
+        ...prev,
+        credit: [...prev.credit, entry]
+      }));
+    }
+
+    // Clear inputs
+    setDate('');
+    setParticulars('');
+    setLedgerFolio('');
     setAmount('');
   };
 
-  const calculateTotal = () => {
-    return entries.reduce((total, entry) => total + entry.amount, 0);
+  const deleteEntry = (index) => {
+    setEntries((prev) => {
+      const updatedEntries = [...prev[isDebit ? 'debit' : 'credit']];
+      updatedEntries.splice(index, 1);
+      return { ...prev, [isDebit ? 'debit' : 'credit']: updatedEntries };
+    });
   };
+
+  const switchSide = () => {
+    setIsDebit(!isDebit);
+  };
+
+  const calculateTotal = (side) =>
+    entries[side].reduce((acc, entry) => acc + entry.amount, 0);
 
   return (
     <Container>
       <h1>Ledger</h1>
-      <Form>
-        <input
-          type="text"
-          placeholder="Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
+      <Section>
+        <h2>{isDebit ? 'Debit Side' : 'Credit Side'}</h2>
+        <Input
+          type="date"
+          placeholder="Date"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
         />
-        <input
+        <Input
+          type="text"
+          placeholder="Particulars"
+          value={particulars}
+          onChange={(e) => setParticulars(e.target.value)}
+        />
+        <Input
+          type="text"
+          placeholder="Ledger Folio (LF)"
+          value={ledgerFolio}
+          onChange={(e) => setLedgerFolio(e.target.value)}
+        />
+        <Input
           type="number"
           placeholder="Amount"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
         />
-        <button onClick={addEntry}>Add Entry</button>
-      </Form>
-      <Table>
-        <thead>
-          <tr>
-            <th>Description</th>
-            <th>Amount</th>
-          </tr>
-        </thead>
-        <tbody>
-          {entries.map((entry, index) => (
-            <tr key={index}>
-              <td>{entry.description}</td>
-              <td>{entry.amount.toFixed(2)}</td>
+        <Button onClick={addEntry}>Add Entry</Button>
+        <Button onClick={switchSide}>
+          {isDebit ? 'Switch to Credit Side' : 'Switch to Debit Side'}
+        </Button>
+        <Table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Particulars</th>
+              <th>Ledger Folio (LF)</th>
+              <th>Amount</th>
+              <th>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </Table>
-      <Total>Total: {calculateTotal().toFixed(2)}</Total>
+          </thead>
+          <tbody>
+            {entries[isDebit ? 'debit' : 'credit'].map((entry, index) => (
+              <tr key={index}>
+                <td>{entry.date}</td>
+                <td>{entry.particulars}</td>
+                <td>{entry.ledgerFolio}</td>
+                <td>{entry.amount.toFixed(2)}</td>
+                <td>
+                  <DeleteButton onClick={() => deleteEntry(index)}>Delete</DeleteButton>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+        <Total>Total {isDebit ? 'Debit' : 'Credit'}: {calculateTotal(isDebit ? 'debit' : 'credit').toFixed(2)}</Total>
+      </Section>
     </Container>
   );
 };
 
-const Container = styled.div`
-  padding: 2rem;
-`;
-
-const Form = styled.div`
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
-
-  input {
-    padding: 0.5rem;
-    font-size: 1rem;
-  }
-
-  button {
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
-  }
-
-  button:hover {
-    background-color: #0056b3;
-  }
-`;
-
-const Table = styled.table`
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 1rem;
-
-  th, td {
-    padding: 0.5rem;
-    border: 1px solid #ddd;
-  }
-
-  th {
-    background-color: #f4f4f4;
-  }
-`;
-
-const Total = styled.div`
-  font-weight: bold;
-  font-size: 1.2rem;
-`;
-
 export default Ledger;
-

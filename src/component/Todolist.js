@@ -1,19 +1,27 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
+import { Container, TaskInput, AddButton, DeleteButton, TaskList, TaskItem, TaskPrioritySelect, FilterButton, FilterContainer } from '../style/ToDoListStyles';
 
 const ToDoList = () => {
   const [tasks, setTasks] = useState([]);
-  const [task, setTask] = useState('');
+  const [taskText, setTaskText] = useState('');
+  const [priority, setPriority] = useState('Low');
+  const [filter, setFilter] = useState('All'); // All, Completed, Not Completed
 
   const addTask = () => {
-    setTasks([...tasks, { task, completed: false }]);
-    setTask('');
+    if (taskText.trim() === '') return;
+    
+    setTasks([
+      ...tasks,
+      { text: taskText, priority, completed: false }
+    ]);
+
+    setTaskText('');
+    setPriority('Low');
   };
 
-  const toggleTaskCompletion = (index) => {
-    const newTasks = tasks.map((t, i) => (
-      i === index ? { ...t, completed: !t.completed } : t
-    ));
+  const toggleCompletion = (index) => {
+    const newTasks = [...tasks];
+    newTasks[index].completed = !newTasks[index].completed;
     setTasks(newTasks);
   };
 
@@ -22,88 +30,56 @@ const ToDoList = () => {
     setTasks(newTasks);
   };
 
+  const filteredTasks = tasks.filter(task => {
+    if (filter === 'All') return true;
+    if (filter === 'Completed') return task.completed;
+    if (filter === 'Not Completed') return !task.completed;
+    return true;
+  });
+
   return (
     <Container>
       <h1>To-Do List</h1>
-      <Form>
-        <input
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <TaskInput
           type="text"
-          placeholder="New Task"
-          value={task}
-          onChange={(e) => setTask(e.target.value)}
+          placeholder="Enter task"
+          value={taskText}
+          onChange={(e) => setTaskText(e.target.value)}
         />
-        <button onClick={addTask}>Add Task</button>
-      </Form>
+        <TaskPrioritySelect
+          value={priority}
+          onChange={(e) => setPriority(e.target.value)}
+        >
+          <option value="Low">Low</option>
+          <option value="Medium">Medium</option>
+          <option value="High">High</option>
+        </TaskPrioritySelect>
+        <AddButton onClick={addTask}>Add Task</AddButton>
+      </div>
+      <FilterContainer>
+        <FilterButton onClick={() => setFilter('All')}>All</FilterButton>
+        <FilterButton onClick={() => setFilter('Completed')}>Completed</FilterButton>
+        <FilterButton onClick={() => setFilter('Not Completed')}>Not Completed</FilterButton>
+      </FilterContainer>
       <TaskList>
-        {tasks.map((t, index) => (
-          <Task key={index} completed={t.completed}>
-            <span onClick={() => toggleTaskCompletion(index)}>
-              {t.task}
+        {filteredTasks.map((task, index) => (
+          <TaskItem key={index}>
+            <input
+              type="checkbox"
+              checked={task.completed}
+              onChange={() => toggleCompletion(index)}
+              style={{ marginRight: '0.5rem' }}
+            />
+            <span style={{ textDecoration: task.completed ? 'line-through' : 'none', flex: 1 }}>
+              {task.text} ({task.priority})
             </span>
-            <button onClick={() => deleteTask(index)}>Delete</button>
-          </Task>
+            <DeleteButton onClick={() => deleteTask(index)}>Delete</DeleteButton>
+          </TaskItem>
         ))}
       </TaskList>
     </Container>
   );
 };
-
-const Container = styled.div`
-  padding: 2rem;
-`;
-
-const Form = styled.div`
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
-
-  input {
-    padding: 0.5rem;
-    font-size: 1rem;
-  }
-
-  button {
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
-  }
-
-  button:hover {
-    background-color: #0056b3;
-  }
-`;
-
-const TaskList = styled.ul`
-  list-style: none;
-  padding: 0;
-`;
-
-const Task = styled.li`
-  display: flex;
-  justify-content: space-between;
-  padding: 0.5rem;
-  margin-bottom: 0.5rem;
-  background-color: ${props => props.completed ? '#d4edda' : '#f8d7da'};
-  border: 1px solid ${props => props.completed ? '#c3e6cb' : '#f5c6cb'};
-
-  span {
-    cursor: pointer;
-    text-decoration: ${props => props.completed ? 'line-through' : 'none'};
-  }
-
-  button {
-    background: none;
-    border: none;
-    color: #dc3545;
-    cursor: pointer;
-  }
-
-  button:hover {
-    text-decoration: underline;
-  }
-`;
 
 export default ToDoList;
