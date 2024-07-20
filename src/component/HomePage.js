@@ -1,5 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
+import balanceImg from '../assets/balancesheet.jpg'; 
+import ledgerImg from '../assets/ledger.jpg'; // Add image path
+import todoImg from '../assets/todo-list.jpg'
 
 const Home = () => (
   <HomeContainer>
@@ -10,23 +13,35 @@ const Home = () => (
         <p className="animate">
           We provide a comprehensive suite of tools designed to help you manage your finances and tasks efficiently. Our application includes:
         </p>
-        <ul>
-          <li>Balance Sheets for accurate financial tracking</li>
-          <li>Ledgers for detailed record-keeping</li>
-          <li>To-Do Lists for managing your tasks and reminders</li>
-        </ul>
+        <FeaturesGrid>
+          <Feature>
+            <img src={balanceImg} alt="Balance Sheets" />
+            <h3>Balance Sheets</h3>
+            <p>Accurate financial tracking</p>
+          </Feature>
+          <Feature>
+            <img src={ledgerImg} alt="Ledgers" />
+            <h3>Ledgers</h3>
+            <p>Detailed record-keeping</p>
+          </Feature>
+          <Feature>
+            <img src={todoImg} alt="To-Do List" />
+            <h3>To-Do Lists</h3>
+            <p>Managing your tasks and reminders</p>
+          </Feature>
+        </FeaturesGrid>
       </Section>
       <Section>
         <h2>Features</h2>
         <p className="animate">
           Our Financial App comes with a range of features to streamline your financial management:
         </p>
-        <ul>
+        <ol>
           <li>Intuitive and user-friendly interface</li>
           <li>Real-time updates and calculations</li>
           <li>Customizable templates and reports</li>
           <li>Secure data storage and backup</li>
-        </ul>
+        </ol>
       </Section>
       <Section>
         <h2>How It Works</h2>
@@ -46,29 +61,30 @@ const Home = () => (
           We value your feedback and are here to help you. Reach out to us via:
         </p>
         <ul>
-          <li>Email: support@financialapp.com</li>
-          <li>Phone: (123) 456-7890</li>
-          <li>Social Media: Follow us on Twitter, Facebook, and LinkedIn</li>
+          <li>Email: Shrehan2301@gmail.com</li>
+          <li>Phone: +91 9477614421</li>
+          {/* <li>Social Media: Follow us on Twitter, Facebook, and LinkedIn</li> */}
         </ul>
       </Section>
       <Footer>
-        Made by a noob developer with a CA friend
+        <p>Made by a noob developer with a CA friend</p>
+        <p>Gmail: Shrehan2301@gmail.com | GitHub: shrehan1234</p>
       </Footer>
     </Content>
   </HomeContainer>
 );
 
 const HomeContainer = styled.div`
-  height: 100vh;
-  width: 100vw;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
   background: linear-gradient(135deg, rgba(74, 144, 226, 0.8), rgba(245, 247, 250, 0.8));
+  padding: 2rem;
 `;
 
 const Content = styled.div`
@@ -79,10 +95,8 @@ const Content = styled.div`
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
   color: #333;
   max-width: 800px;
-  width: 100%;
   margin: 0 auto;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-  box-sizing: border-box;
 
   h1 {
     font-size: 2.5rem;
@@ -123,16 +137,43 @@ const Section = styled.section`
   margin-bottom: 2rem;
 `;
 
-const Footer = styled.footer`
-  position: absolute;
-  bottom: 1rem;
-  width: 100%;
+const FeaturesGrid = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+`;
+
+const Feature = styled.div`
+  flex: 1 1 200px;
+  max-width: 300px;
   text-align: center;
-  font-size: 0.9rem;
-  padding: 0.5rem;
-  background-color: rgba(0, 0, 0, 0.2);
+
+  img {
+    max-width: 100%;
+    border-radius: 10px;
+  }
+
+  h3 {
+    margin: 0.5rem 0;
+  }
+
+  p {
+    margin: 0.5rem 0;
+  }
+`;
+
+const Footer = styled.footer`
+  margin-top: 2rem;
+  padding: 1rem;
+  background-color: rgba(0, 0, 0, 0.1);
   color: #333;
-  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+  p {
+    margin: 0.5rem 0;
+  }
 `;
 
 export default Home;

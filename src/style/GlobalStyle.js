@@ -9,10 +9,10 @@ const GlobalStyle = createGlobalStyle`
     background-color: ${({ isDarkMode }) => (isDarkMode ? '#121212' : '#ffffff')};
     color: ${({ isDarkMode }) => (isDarkMode ? '#ffffff' : '#000000')};
     transition: background-color 0.3s, color 0.3s;
-    height: 100vh;
-    width: 100vw;
-    overflow-x: hidden; /* Disable horizontal scroll */
-    overflow-y: auto; /* Enable vertical scroll if needed */
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    padding-top: 60px; /* To prevent content overlap with fixed navbar */
   }
 
   *, *::before, *::after {
@@ -37,7 +37,7 @@ const GlobalStyle = createGlobalStyle`
   }
 
   button {
-    cursor: pointer; /* Reset cursor to default */
+    cursor: pointer;
   }
 
   table {
