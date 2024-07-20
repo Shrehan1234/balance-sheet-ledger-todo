@@ -4,6 +4,7 @@ import Navbar from './component/Navbar';
 import BalanceSheet from './component/BalanceSheet';
 import Ledger from './component/Ledger';
 import ToDoList from './component/Todolist';
+import Home from './component/HomePage';  // Import the  Home component
 import GlobalStyle from './style/GlobalStyle';
 import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 import styled from 'styled-components';
@@ -57,16 +58,6 @@ const ThemeToggleButton = styled.button`
   &:hover {
     background-color: #0056b3;
   }
-`;
-
-const Home = () => (
-  <HomeContainer>
-    <h1>Welcome to the Financial App</h1>
-  </HomeContainer>
-);
-
-const HomeContainer = styled.div`
-  text-align: center;
 `;
 
 export default App;

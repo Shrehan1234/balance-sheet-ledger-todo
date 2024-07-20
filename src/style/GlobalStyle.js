@@ -8,6 +8,11 @@ const GlobalStyle = createGlobalStyle`
     font-family: 'Arial', sans-serif;
     background-color: ${({ isDarkMode }) => (isDarkMode ? '#121212' : '#ffffff')};
     color: ${({ isDarkMode }) => (isDarkMode ? '#ffffff' : '#000000')};
+    transition: background-color 0.3s, color 0.3s;
+    height: 100vh;
+    width: 100vw;
+    overflow-x: hidden; /* Disable horizontal scroll */
+    overflow-y: auto; /* Enable vertical scroll if needed */
   }
 
   *, *::before, *::after {
@@ -32,7 +37,7 @@ const GlobalStyle = createGlobalStyle`
   }
 
   button {
-    cursor: pointer;
+    cursor: pointer; /* Reset cursor to default */
   }
 
   table {
